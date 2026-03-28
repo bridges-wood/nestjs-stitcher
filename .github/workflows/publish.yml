@@ -1,0 +1,55 @@
+name: Build & Publish
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+      - name: Publish packages
+        run: |
+          # Publish in dependency order: common → auth → subgraph → gateway
+          for pkg in common auth subgraph gateway; do
+            cd packages/$pkg
+            # Skip if this version is already published
+            PKG_NAME=$(node -p "require('./package.json').name")
+            PKG_VERSION=$(node -p "require('./package.json').version")
+            if npm view "$PKG_NAME@$PKG_VERSION" version 2>/dev/null; then
+              echo "⏭️  $PKG_NAME@$PKG_VERSION already published, skipping"
+            else
+              npm publish --provenance --access public
+              echo "✅ Published $PKG_NAME@$PKG_VERSION"
+            fi
+            cd ../..
+          done
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

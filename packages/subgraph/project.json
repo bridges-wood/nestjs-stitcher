@@ -5,6 +5,18 @@
   "projectType": "library",
   "tags": [],
   "targets": {
+    "build": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cd packages/subgraph && swc src -d dist --strip-leading-paths --config-file ../../.swcrc --ignore '**/*.spec.ts'",
+          "tsc -p packages/subgraph/tsconfig.lib.json --outDir packages/subgraph/dist --tsBuildInfoFile packages/subgraph/dist/tsconfig.lib.tsbuildinfo --emitDeclarationOnly --declaration"
+        ],
+        "parallel": false,
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "test": {
       "executor": "nx:run-commands",
       "options": {

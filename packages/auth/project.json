@@ -5,6 +5,18 @@
   "projectType": "library",
   "tags": [],
   "targets": {
+    "build": {
+      "dependsOn": ["^build"],
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "cd packages/auth && swc src -d dist --strip-leading-paths --config-file ../../.swcrc --ignore '**/*.spec.ts'",
+          "tsc -p packages/auth/tsconfig.lib.json --outDir packages/auth/dist --tsBuildInfoFile packages/auth/dist/tsconfig.lib.tsbuildinfo --emitDeclarationOnly --declaration"
+        ],
+        "parallel": false,
+        "cwd": "{workspaceRoot}"
+      }
+    },
     "test": {
       "executor": "nx:run-commands",
       "options": {

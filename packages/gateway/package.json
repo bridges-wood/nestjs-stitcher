@@ -2,8 +2,16 @@
   "name": "@nestjs-stitcher/gateway",
   "version": "0.0.1",
   "type": "commonjs",
-  "main": "./src/index.ts",
-  "typings": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "@nestjs-stitcher/source": {
+        "default": "./src/index.ts"
+      },
+      "default": "./dist/index.js"
+    }
+  },
   "dependencies": {
     "@nestjs/common": "^11.0.0",
     "@nestjs/core": "^11.0.0",

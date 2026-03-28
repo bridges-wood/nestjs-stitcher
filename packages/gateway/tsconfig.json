@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/packages/gateway",
+    "tsBuildInfoFile": "../../dist/packages/gateway/tsconfig.tsbuildinfo",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../common" }, { "path": "../auth" }]
+}

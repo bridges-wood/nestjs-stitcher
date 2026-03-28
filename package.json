@@ -2,16 +2,30 @@
   "name": "@nestjs-stitcher/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build": "nx run-many --target=build --all",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "lint": "biome check .",
+    "lint:fix": "biome check --fix .",
+    "format": "biome format --write ."
+  },
   "private": true,
-  "dependencies": {},
+  "pnpm": {
+    "overrides": {
+      "graphql": "16.13.2"
+    }
+  },
   "devDependencies": {
+    "@biomejs/biome": "^2.0.0",
     "@nx/js": "22.6.3",
     "@swc-node/register": "~1.11.1",
     "@swc/core": "~1.15.5",
     "@swc/helpers": "~0.5.18",
+    "@types/node": "^25.5.0",
     "nx": "22.6.3",
     "tslib": "^2.3.0",
-    "typescript": "~5.9.2"
+    "typescript": "~5.9.2",
+    "vitest": "^3.0.0"
   }
 }

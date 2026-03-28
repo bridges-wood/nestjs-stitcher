@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/packages/subgraph",
+    "tsBuildInfoFile": "../../dist/packages/subgraph/tsconfig.tsbuildinfo",
+    "rootDir": "src"
+  },
+  "include": ["src/**/*.ts"],
+  "references": [{ "path": "../common" }, { "path": "../auth" }]
+}

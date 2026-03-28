@@ -2,5 +2,10 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    { "path": "packages/common" },
+    { "path": "packages/auth" },
+    { "path": "packages/subgraph" },
+    { "path": "packages/gateway" }
+  ]
 }

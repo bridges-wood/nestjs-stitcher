@@ -1,0 +1,30 @@
+{
+  "name": "@nestjs-stitcher/gateway",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "main": "./src/index.ts",
+  "typings": "./src/index.ts",
+  "dependencies": {
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/config": "^4.0.0",
+    "@nestjs/graphql": "^13.0.0",
+    "@nestjs/schedule": "^5.0.0",
+    "@nestjs-stitcher/common": "workspace:*",
+    "@nestjs-stitcher/auth": "workspace:*",
+    "@graphql-tools/delegate": "^10.0.0",
+    "@graphql-tools/stitch": "^9.0.0",
+    "@graphql-tools/stitching-directives": "^3.1.0",
+    "@graphql-tools/utils": "^10.0.0",
+    "@graphql-tools/wrap": "^10.0.0",
+    "exponential-backoff": "^3.1.0",
+    "graphql": "^16.9.0",
+    "graphql-sse": "^2.0.0",
+    "js-yaml": "^4.1.0",
+    "rxjs": "^7.8.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9"
+  }
+}

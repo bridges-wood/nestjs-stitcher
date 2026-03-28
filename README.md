@@ -1,109 +1,218 @@
-# NestjsStitcher
+# @nestjs-stitcher
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+A set of NestJS modules for building federated GraphQL architectures using schema stitching.
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is ready ✨.
+## Overview
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+- **4 packages**: `@nestjs-stitcher/gateway`, `@nestjs-stitcher/auth`, `@nestjs-stitcher/subgraph`, `@nestjs-stitcher/common`
+- **Built on `@graphql-tools/stitch`** with reactive RxJS schema composition
+- **NestJS-native**: modules, dependency injection, guards, decorators, interceptors
+- **GraphQL server agnostic**: produces a standard `GraphQLSchema` (works with Yoga, Apollo, Mercurius)
+- **DB-agnostic**: no database opinions
 
-## Generate a library
+## Packages
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+| Package | Purpose |
+| --- | --- |
+| `@nestjs-stitcher/gateway` | Schema stitching gateway — discovers subgraphs, fetches SDL, stitches schemas |
+| `@nestjs-stitcher/subgraph` | Helpers for NestJS services to expose as stitchable subgraphs |
+| `@nestjs-stitcher/auth` | JWT auth with support for remote JWKS and local key validation |
+| `@nestjs-stitcher/common` | Shared types, HMAC utilities, error classes, config tokens |
+
+## Quick Start
+
+### Gateway Setup
+
+```typescript
+import { Module } from '@nestjs/common';
+import { GatewayModule, AuthVisitor, SignatureVisitor } from '@nestjs-stitcher/gateway';
+import { AuthModule } from '@nestjs-stitcher/auth';
+
+@Module({
+  imports: [
+    GatewayModule.forRoot({
+      endpointsConfigPath: './config.yml',
+      hmacSecret: process.env.HMAC_SECRET,
+      extensionVisitors: [
+        new AuthVisitor(),
+        new SignatureVisitor({ hmacSecret: process.env.HMAC_SECRET }),
+      ],
+      autoReloadInterval: 300_000,
+    }),
+    AuthModule.forRoot({
+      strategy: 'remote',
+      jwksEndpoints: ['https://auth-service/.well-known/jwks.json'],
+      jwt: { issuer: 'my-app', audience: 'my-app:api' },
+    }),
+  ],
+})
+export class AppModule {}
 ```
 
-## Run tasks
+### Subgraph Setup
 
-To build the library use:
+```typescript
+import { Module } from '@nestjs/common';
+import { SubgraphModule, prepareSchemaForFederation } from '@nestjs-stitcher/subgraph';
+import { AuthModule } from '@nestjs-stitcher/auth';
 
-```sh
-npx nx build pkg1
+@Module({
+  imports: [
+    SubgraphModule.forRoot({
+      hmacSecret: process.env.HMAC_SECRET,
+    }),
+    AuthModule.forRoot({
+      strategy: 'remote',
+      jwksEndpoints: ['https://auth-service/.well-known/jwks.json'],
+      jwt: { issuer: 'my-app', audience: 'my-app:api' },
+    }),
+  ],
+})
+export class UsersServiceModule {}
+
+// In your GraphQL module config, use prepareSchemaForFederation() as a schema transformer
 ```
 
-To run any task with Nx use:
+### Endpoints Config (`config.yml`)
 
-```sh
-npx nx <target> <project-name>
+```yaml
+endpoints:
+  - name: users-service
+    hash: abc123
+    url: https://localhost:4001/graphql
+  - name: products-service
+    hash: def456
+    url: https://localhost:4002/graphql
+    jwksUri: https://localhost:4002/.well-known/jwks.json
 ```
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
-
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Versioning and releasing
-
-To version and release the library use
+## Architecture
 
 ```
-npx nx release
+                        ┌──────────────────────┐
+                        │       Clients        │
+                        └──────────┬───────────┘
+                                   │ JWT
+                                   ▼
+                        ┌──────────────────────┐
+                        │       Gateway        │
+                        │  (stitches schemas)  │
+                        └──┬───────┬───────┬───┘
+                  HMAC +   │       │       │   + HMAC
+                  JWT ext  │       │       │     JWT ext
+                           ▼       ▼       ▼
+                     ┌────────┐┌────────┐┌────────┐
+                     │ Sub  A ││ Sub  B ││ Sub  C │
+                     └────────┘└────────┘└────────┘
+
+  Auth: JWT validation at gateway + HMAC-signed extensions to subgraphs
 ```
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+## Auth Deployment Models
 
-[Learn more about Nx release &raquo;](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### Model A: Separate Auth Service
 
-## Keep TypeScript project references up to date
+1. A dedicated auth service issues JWTs:
+   `AuthModule.forRoot({ strategy: 'local', signingKey: ... })`
+2. The gateway validates tokens via remote JWKS:
+   `AuthModule.forRoot({ strategy: 'remote', jwksEndpoints: [...] })`
+3. Subgraphs trust the gateway via HMAC-signed extensions.
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+### Model B: Gateway-Embedded Auth
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+1. The gateway issues **and** validates JWTs locally:
+   `AuthModule.forRoot({ strategy: 'local', signingKey: ... })`
+2. Subgraphs trust the gateway via HMAC-signed extensions.
 
-```sh
-npx nx sync
+## Configuration Reference
+
+### `GatewayModule.forRoot(options)`
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `endpointsConfigPath` | `string` | Path to YAML config file |
+| `hmacSecret` | `string` | Secret for HMAC request signing |
+| `extensionVisitors` | `ExtensionVisitor[]` | Array of `ExtensionVisitor` implementations |
+| `autoReloadInterval` | `number` | Auto-reload interval in ms (default: `300000`; `0` to disable) |
+| `endpoints` | `Endpoint[]` | Initial endpoints array (alternative to config file) |
+
+### `AuthModule.forRoot(options)`
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `strategy` | `'remote' \| 'local'` | Auth strategy |
+| `jwksEndpoints` | `string[]` | JWKS endpoint URLs (remote strategy) |
+| `signingKey` | `string` | Local signing key PEM / secret (local strategy) |
+| `jwt.issuer` | `string` | Expected JWT issuer |
+| `jwt.audience` | `string` | Expected JWT audience |
+| `jwt.algorithms` | `string[]` | Allowed algorithms |
+| `bypassAuth` | `boolean` | Bypass auth (development only) |
+
+### `SubgraphModule.forRoot(options)`
+
+| Option | Type | Description |
+| --- | --- | --- |
+| `hmacSecret` | `string` | Secret for HMAC validation |
+| `schemaTransformers` | `SchemaTransformer[]` | Additional schema transformers |
+| `bootstrap` | `object` | Port / HTTPS configuration |
+
+## Key Concepts
+
+### Schema Stitching
+
+The `SchemaStitcher` uses RxJS to reactively compose schemas. When endpoints change (config reload, DNS discovery, etc.), the gateway automatically re-stitches the combined schema — no restart required.
+
+### Extension Visitors
+
+The visitor pattern enriches outgoing requests from the gateway to subgraphs:
+
+- **`AuthVisitor`** — forwards JWT claims (`sub`, `roles`) as trusted extensions
+- **`SignatureVisitor`** — computes HMAC-SHA256 signatures for request integrity
+
+### HMAC Security
+
+Requests from the gateway to subgraphs are signed with HMAC-SHA256. Subgraphs validate the signature via the `HmacValidationInterceptor`, ensuring only the trusted gateway can invoke them.
+
+### Endpoint Loaders
+
+| Loader | Description |
+| --- | --- |
+| `LocalEndpointLoader` | Loads endpoints from a config file or static list |
+| `DnsEndpointLoader` | Discovers endpoints via DNS SRV records (e.g. Consul) |
+| Custom | Extend `EndpointLoader` for custom discovery mechanisms |
+
+## Guards & Decorators
+
+```typescript
+import { CurrentUser, Public, Roles, StitcherAuthGuard, RolesGuard } from '@nestjs-stitcher/auth';
+import { StitcherUser } from '@nestjs-stitcher/common';
+
+@Resolver()
+export class UsersResolver {
+  @Public()
+  @Query(() => String)
+  health() {
+    return 'ok';
+  }
+
+  @Roles(['admin'])
+  @Query(() => [User])
+  users(@CurrentUser() user: StitcherUser) {
+    // user.id, user.roles available
+  }
+}
 ```
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+## Development
 
-```sh
-npx nx sync:check
+```bash
+pnpm install       # Install dependencies
+pnpm test          # Run all tests
+pnpm test:watch    # Watch mode
+pnpm lint          # Lint with Biome
+pnpm lint:fix      # Auto-fix lint issues
 ```
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+## License
 
-## Set up CI!
-
-### Step 1
-
-To connect to Nx Cloud, run the following command:
-
-```sh
-npx nx connect
-```
-
-Connecting to Nx Cloud ensures a [fast and scalable CI](https://nx.dev/ci/intro/why-nx-cloud?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) pipeline. It includes features such as:
-
-- [Remote caching](https://nx.dev/ci/features/remote-cache?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task distribution across multiple machines](https://nx.dev/ci/features/distribute-task-execution?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Automated e2e test splitting](https://nx.dev/ci/features/split-e2e-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Task flakiness detection and rerunning](https://nx.dev/ci/features/flaky-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-### Step 2
-
-Use the following command to configure a CI workflow for your workspace:
-
-```sh
-npx nx g ci-workflow
-```
-
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Install Nx Console
-
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
-
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+MIT

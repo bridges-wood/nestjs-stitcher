@@ -5,7 +5,7 @@ import {
   appendObjectFields,
   printSchemaWithDirectives,
 } from '@graphql-tools/utils';
-import { GraphQLObjectType, GraphQLSchema, GraphQLString } from 'graphql';
+import { GraphQLObjectType, type GraphQLSchema, GraphQLString } from 'graphql';
 
 const { stitchingDirectivesValidator, allStitchingDirectives } =
   stitchingDirectives();

@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
 import { resolveSrv } from 'node:dns/promises';
+import { Injectable, Logger } from '@nestjs/common';
+import type { ExecutorFactory } from '../executors/executor-factory.js';
 import { EndpointLoader } from './endpoint-loader.js';
-import { ExecutorFactory } from '../executors/executor-factory.js';
 import type { Endpoint } from './models/endpoint.model.js';
 
 @Injectable()

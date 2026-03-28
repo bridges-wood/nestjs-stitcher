@@ -1,17 +1,21 @@
 import {
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
   Inject,
   Injectable,
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import type { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import type { StitcherUser } from '@nestjs-stitcher/common';
+import {
+  AUTH_MODULE_OPTIONS,
+  type AuthModuleOptions,
+} from '../config/auth-config.interface.js';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator.js';
-import { AUTH_MODULE_OPTIONS, type AuthModuleOptions } from '../config/auth-config.interface.js';
-import { JwtVerifier } from '../strategies/jwt-verifier.js';
+import type { JwtVerifier } from '../strategies/jwt-verifier.js';
+import { extractBearerToken } from '../utils/extract-auth-token.js';
 
 @Injectable()
 export class StitcherAuthGuard implements CanActivate {
@@ -32,6 +36,9 @@ export class StitcherAuthGuard implements CanActivate {
     if (isPublic) return true;
 
     if (this.options.bypassAuth) {
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error('bypassAuth must not be enabled in production');
+      }
       this.logger.warn('⚠️ Bypassing authentication');
       const ctx = GqlExecutionContext.create(context);
       ctx.getContext().req.user = {
@@ -46,7 +53,7 @@ export class StitcherAuthGuard implements CanActivate {
 
     // Check for trusted request from gateway (HMAC-signed)
     const body = req.body;
-    if (body?.extensions?.trusted === true) {
+    if (body?.extensions?.trusted === true && req.hmacVerified === true) {
       req.user = {
         id: body.extensions.sub,
         roles: body.extensions.roles,
@@ -55,14 +62,11 @@ export class StitcherAuthGuard implements CanActivate {
     }
 
     // Extract and validate JWT
-    const authHeader = req.headers?.authorization;
-    if (!authHeader) {
-      throw new UnauthorizedException('Authorization header missing');
-    }
-
-    const [type, token] = authHeader.split(' ');
-    if (type !== 'Bearer' || !token) {
-      throw new UnauthorizedException('Invalid authorization header format');
+    const token = extractBearerToken(req.headers?.authorization);
+    if (!token) {
+      throw new UnauthorizedException(
+        'Authorization header missing or invalid format',
+      );
     }
 
     try {

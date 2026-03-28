@@ -1,10 +1,22 @@
 {
   "name": "@nestjs-stitcher/gateway",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Schema stitching gateway module for NestJS GraphQL",
+  "license": "MIT",
+  "author": "Bridges Wood",
+  "keywords": [
+    "nestjs",
+    "graphql",
+    "schema-stitching",
+    "federation",
+    "gateway"
+  ],
   "type": "commonjs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -13,17 +25,18 @@
     "url": "git+https://github.com/bridges-wood/nestjs-stitcher.git",
     "directory": "packages/gateway"
   },
+  "bugs": {
+    "url": "https://github.com/bridges-wood/nestjs-stitcher/issues"
+  },
   "exports": {
     ".": {
-      "@nestjs-stitcher/source": {
-        "default": "./src/index.ts"
-      },
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
   "dependencies": {
-    "@nestjs-stitcher/common": "0.0.1",
-    "@nestjs-stitcher/auth": "0.0.1",
+    "@nestjs-stitcher/common": "0.1.0",
+    "@nestjs-stitcher/auth": "0.1.0",
     "@graphql-tools/delegate": "^10.0.0",
     "@graphql-tools/stitch": "^9.0.0",
     "@graphql-tools/stitching-directives": "^3.1.0",

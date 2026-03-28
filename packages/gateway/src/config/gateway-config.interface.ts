@@ -10,7 +10,12 @@ export interface GatewayModuleOptions {
   /** Auto-reload interval in ms. Default: 300000 (5 min). Set to 0 to disable. */
   autoReloadInterval?: number;
   /** Initial endpoints (alternative to config file) */
-  endpoints?: Array<{ name: string; hash: string; url: string; jwksUri?: string }>;
+  endpoints?: Array<{
+    name: string;
+    hash: string;
+    url: string;
+    jwksUri?: string;
+  }>;
 }
 
 export const GATEWAY_MODULE_OPTIONS = Symbol('GATEWAY_MODULE_OPTIONS');

@@ -1,10 +1,24 @@
 {
   "name": "@nestjs-stitcher/common",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Shared types, HMAC utilities, and error classes for @nestjs-stitcher",
+  "license": "MIT",
+  "author": "Bridges Wood",
+  "keywords": [
+    "nestjs",
+    "graphql",
+    "schema-stitching",
+    "federation",
+    "common",
+    "utilities",
+    "hmac"
+  ],
   "type": "commonjs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -13,11 +27,12 @@
     "url": "git+https://github.com/bridges-wood/nestjs-stitcher.git",
     "directory": "packages/common"
   },
+  "bugs": {
+    "url": "https://github.com/bridges-wood/nestjs-stitcher/issues"
+  },
   "exports": {
     ".": {
-      "@nestjs-stitcher/source": {
-        "default": "./src/index.ts"
-      },
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },

@@ -23,9 +23,6 @@ export class InternalServerError extends Error {
 
 export class NotFoundError extends GraphQLError {
   override readonly name = 'NotFoundError';
-  constructor(message: string) {
-    super(message);
-  }
 }
 
 export class NotImplementedError extends Error {

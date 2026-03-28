@@ -1,7 +1,13 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { JwksClient } from 'jwks-rsa';
-import { AUTH_MODULE_OPTIONS, type AuthModuleOptions } from '../config/auth-config.interface.js';
-import { type GetSigningKeyFunction, SigningKeyProvider } from './signing-key.provider.js';
+import {
+  AUTH_MODULE_OPTIONS,
+  type AuthModuleOptions,
+} from '../config/auth-config.interface.js';
+import {
+  type GetSigningKeyFunction,
+  SigningKeyProvider,
+} from './signing-key.provider.js';
 
 @Injectable()
 export class RemoteSigningKeyProvider extends SigningKeyProvider {

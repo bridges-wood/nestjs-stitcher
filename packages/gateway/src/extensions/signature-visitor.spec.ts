@@ -1,11 +1,13 @@
-import { describe, it, expect } from 'vitest';
-import { parse } from 'graphql';
 import { HMAC_SIGNATURE_EXTENSION } from '@nestjs-stitcher/common';
+import { parse } from 'graphql';
+import { describe, expect, it } from 'vitest';
 import { SignatureVisitor } from './signature-visitor.js';
 
 describe('SignatureVisitor', () => {
   it('should compute and add HMAC signature', () => {
-    const visitor = new SignatureVisitor({ hmacSecret: 'test-secret' });
+    const visitor = new SignatureVisitor({
+      hmacSecret: 'test-secret-that-is-at-least-32-chars!',
+    });
     const document = parse('{ hello }');
     const extensions = {};
 
@@ -32,7 +34,9 @@ describe('SignatureVisitor', () => {
   });
 
   it('should produce different signatures for different queries', () => {
-    const visitor = new SignatureVisitor({ hmacSecret: 'test-secret' });
+    const visitor = new SignatureVisitor({
+      hmacSecret: 'test-secret-that-is-at-least-32-chars!',
+    });
     const doc1 = parse('{ hello }');
     const doc2 = parse('{ world }');
 

@@ -1,4 +1,4 @@
-import { Logger, Type } from '@nestjs/common';
+import { Logger, type Type } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { findAndListenOnPort } from './find-port.js';
 
@@ -12,7 +12,12 @@ export interface BootstrapOptions {
   /** NestJS logger levels. Default: ['error', 'warn', 'log', 'debug'] */
   logLevels?: ('error' | 'warn' | 'log' | 'debug' | 'verbose')[];
   /** Callback after bootstrap completes */
-  onBootstrap?: (app: ReturnType<typeof NestFactory.create> extends Promise<infer T> ? T : never, port: number) => Promise<void> | void;
+  onBootstrap?: (
+    app: ReturnType<typeof NestFactory.create> extends Promise<infer T>
+      ? T
+      : never,
+    port: number,
+  ) => Promise<void> | void;
 }
 
 /**

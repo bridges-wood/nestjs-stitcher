@@ -1,5 +1,5 @@
-import { defineConfig } from 'vitest/config';
 import { createRequire } from 'node:module';
+import { defineConfig } from 'vitest/config';
 
 const require = createRequire(import.meta.url);
 const graphqlEntry = require.resolve('graphql');

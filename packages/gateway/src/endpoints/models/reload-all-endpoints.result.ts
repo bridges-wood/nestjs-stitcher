@@ -6,6 +6,8 @@ export class ReloadAllEndpointsResult {
   @Field({ description: 'Whether the endpoints were reloaded successfully' })
   success!: boolean;
 
-  @Field(() => [LoadedEndpoint], { description: 'The currently loaded endpoints' })
+  @Field(() => [LoadedEndpoint], {
+    description: 'The currently loaded endpoints',
+  })
   loadedEndpoints!: LoadedEndpoint[];
 }

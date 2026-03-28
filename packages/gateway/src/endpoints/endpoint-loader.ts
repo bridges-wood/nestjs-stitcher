@@ -1,12 +1,22 @@
-import type { AsyncExecutor } from '@graphql-tools/utils';
-import { Injectable, Logger, OnModuleDestroy } from '@nestjs/common';
+import type { AsyncExecutor, ExecutionResult } from '@graphql-tools/utils';
+import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common';
 import { NotFoundError } from '@nestjs-stitcher/common';
 import { backOff } from 'exponential-backoff';
 import { OperationTypeNode, parse } from 'graphql';
-import { BehaviorSubject, debounceTime, Subscription } from 'rxjs';
-import { ExecutorFactory } from '../executors/executor-factory.js';
+import { BehaviorSubject, debounceTime, type Subscription } from 'rxjs';
+import type { ExecutorFactory } from '../executors/executor-factory.js';
 import type { Endpoint } from './models/endpoint.model.js';
 import type { LoadedEndpoint } from './models/loaded-endpoint.model.js';
+
+interface ServiceSDLResponse {
+  _service?: {
+    _sdl?: string;
+  };
+}
+
+interface ReRegisterResponse {
+  _reRegister?: boolean;
+}
 
 @Injectable()
 export abstract class EndpointLoader implements OnModuleDestroy {
@@ -102,7 +112,9 @@ export abstract class EndpointLoader implements OnModuleDestroy {
       }),
     );
 
-    this.logger.log(`Successfully loaded ${loadedEndpoints.length} endpoint(s)`);
+    this.logger.log(
+      `Successfully loaded ${loadedEndpoints.length} endpoint(s)`,
+    );
     this.loadedEndpoints$.next(loadedEndpoints);
   }
 
@@ -126,7 +138,8 @@ export abstract class EndpointLoader implements OnModuleDestroy {
         throw new Error('Expected executor to return a single result');
       }
 
-      const sdl = (result as any)?.data?._service?._sdl;
+      const sdl = (result as ExecutionResult<ServiceSDLResponse>)?.data
+        ?._service?._sdl;
       if (!sdl) {
         this.logger.debug(`Received: ${JSON.stringify(result)}`);
         throw new Error('No SDL found in response');
@@ -154,10 +167,13 @@ export abstract class EndpointLoader implements OnModuleDestroy {
         throw new Error('Expected executor to return a single result');
       }
 
-      const success = (result as any)?.data?._reRegister;
+      const success = (result as ExecutionResult<ReRegisterResponse>)?.data
+        ?._reRegister;
       if (!success) throw new Error('Failed to unregister');
 
-      this.logger.debug(`✅ Successfully unregistered endpoint ${endpoint.name}`);
+      this.logger.debug(
+        `✅ Successfully unregistered endpoint ${endpoint.name}`,
+      );
       return success;
     } catch (error) {
       this.logger.error(

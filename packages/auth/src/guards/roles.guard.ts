@@ -1,10 +1,10 @@
 import {
-  CanActivate,
-  ExecutionContext,
+  type CanActivate,
+  type ExecutionContext,
   Injectable,
   Logger,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+import type { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import type { StitcherUser } from '@nestjs-stitcher/common';
 import { Roles } from '../decorators/roles.decorator.js';
@@ -26,7 +26,10 @@ export class RolesGuard implements CanActivate {
     return this.matchRoles(requiredRoles, user);
   }
 
-  protected matchRoles(roles: string[], user: Pick<StitcherUser, 'roles'>): boolean {
+  protected matchRoles(
+    roles: string[],
+    user: Pick<StitcherUser, 'roles'>,
+  ): boolean {
     this.logger.debug(
       `Permitted roles: [${roles}], User roles: [${user.roles}]`,
     );

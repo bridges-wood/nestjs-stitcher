@@ -8,16 +8,26 @@
     "test:watch": "vitest watch",
     "lint": "biome check .",
     "lint:fix": "biome check --fix .",
-    "format": "biome format --write ."
+    "format": "biome format --write .",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm build && changeset publish"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=9.0.0"
   },
   "private": true,
   "pnpm": {
     "overrides": {
-      "graphql": "16.13.2"
+      "graphql": "16.13.2",
+      "picomatch": ">=4.0.4",
+      "path-to-regexp": ">=8.4.0"
     }
   },
   "devDependencies": {
     "@biomejs/biome": "^2.0.0",
+    "@changesets/cli": "^2.30.0",
     "@nx/js": "22.6.3",
     "@swc-node/register": "~1.11.1",
     "@swc/cli": "^0.8.0",
@@ -25,6 +35,7 @@
     "@swc/helpers": "~0.5.18",
     "@types/node": "^25.5.0",
     "nx": "22.6.3",
+    "reflect-metadata": "^0.2.0",
     "tslib": "^2.3.0",
     "typescript": "~5.9.2",
     "vitest": "^3.0.0"

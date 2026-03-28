@@ -1,6 +1,6 @@
-import { ConfigType, registerAs } from '@nestjs/config';
-import { z } from 'zod';
+import { type ConfigType, registerAs } from '@nestjs/config';
 import { ConfigTokens } from '@nestjs-stitcher/common';
+import { z } from 'zod';
 
 export const EnvironmentConfigValidator = z
   .object({

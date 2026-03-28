@@ -1,7 +1,10 @@
-export { SigningKeyProvider, type GetSigningKeyFunction } from './signing-key.provider.js';
+export {
+  JWKS_ENDPOINT_SOURCE,
+  type JwksEndpointSource,
+  LocalSigningKeyProvider,
+} from './local-signing-key.provider.js';
 export { RemoteSigningKeyProvider } from './remote-signing-key.provider.js';
 export {
-  LocalSigningKeyProvider,
-  type JwksEndpointSource,
-  JWKS_ENDPOINT_SOURCE,
-} from './local-signing-key.provider.js';
+  type GetSigningKeyFunction,
+  SigningKeyProvider,
+} from './signing-key.provider.js';

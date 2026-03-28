@@ -1,5 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
 import type { GraphQLFormattedError } from 'graphql';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { ErrorFormatter } from './error-formatter.js';
 
 describe('ErrorFormatter', () => {
@@ -15,7 +15,10 @@ describe('ErrorFormatter', () => {
       extensions: { code: 'TEST_CODE' },
     };
     const result = formatter.format(formattedError);
-    expect(result).toEqual({ message: 'Test error message', code: 'TEST_CODE' });
+    expect(result).toEqual({
+      message: 'Test error message',
+      code: 'TEST_CODE',
+    });
   });
 
   it('should format error with originalError', () => {
@@ -25,7 +28,10 @@ describe('ErrorFormatter', () => {
       extensions: { code: 'TEST_CODE', originalError },
     };
     const result = formatter.format(formattedError);
-    expect(result).toEqual({ message: 'Original error message', code: 'TEST_CODE' });
+    expect(result).toEqual({
+      message: 'Original error message',
+      code: 'TEST_CODE',
+    });
   });
 
   it('should handle missing extension fields gracefully', () => {

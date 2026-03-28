@@ -6,6 +6,9 @@ export class AddEndpointResult {
   @Field({ description: 'Whether the endpoint was added successfully' })
   success!: boolean;
 
-  @Field(() => Endpoint, { nullable: true, description: 'The endpoint that was added' })
+  @Field(() => Endpoint, {
+    nullable: true,
+    description: 'The endpoint that was added',
+  })
   endpoint?: Endpoint;
 }

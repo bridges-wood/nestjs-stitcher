@@ -1,19 +1,54 @@
-name: Build & Publish
+name: CI
 
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 concurrency:
-  group: publish-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-and-publish:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        env:
+          FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Build
+        run: pnpm build
+
+      - name: Test
+        run: pnpm test
+
+  publish:
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
       id-token: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
         env:
@@ -36,24 +71,12 @@ jobs:
       - name: Build
         run: pnpm build
 
-      - name: Test
-        run: pnpm test
-
-      - name: Publish packages
-        run: |
-          # Publish in dependency order: common → auth → subgraph → gateway
-          for pkg in common auth subgraph gateway; do
-            cd packages/$pkg
-            # Skip if this version is already published
-            PKG_NAME=$(node -p "require('./package.json').name")
-            PKG_VERSION=$(node -p "require('./package.json').version")
-            if npm view "$PKG_NAME@$PKG_VERSION" version 2>/dev/null; then
-              echo "⏭️  $PKG_NAME@$PKG_VERSION already published, skipping"
-            else
-              npm publish --provenance --access public
-              echo "✅ Published $PKG_NAME@$PKG_VERSION"
-            fi
-            cd ../..
-          done
+      - name: Create release PR or publish
+        uses: changesets/action@v1
+        with:
+          publish: pnpm changeset publish
+          title: 'chore: version packages'
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

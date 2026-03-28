@@ -1,4 +1,4 @@
-import { INestApplication, Logger } from '@nestjs/common';
+import { type INestApplication, Logger } from '@nestjs/common';
 
 /**
  * Finds an available port in the given range by random sampling and binds the app.
@@ -20,7 +20,10 @@ export async function findAndListenOnPort(
       await app.listen(port);
       return port;
     } catch {
-      Logger.debug(`Port ${port} is in use, trying next port...`, 'findAndListenOnPort');
+      Logger.debug(
+        `Port ${port} is in use, trying next port...`,
+        'findAndListenOnPort',
+      );
       candidatePorts.delete(port);
     }
   }

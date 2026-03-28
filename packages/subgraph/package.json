@@ -1,10 +1,22 @@
 {
   "name": "@nestjs-stitcher/subgraph",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "Subgraph helpers for NestJS services in a stitched GraphQL architecture",
+  "license": "MIT",
+  "author": "Bridges Wood",
+  "keywords": [
+    "nestjs",
+    "graphql",
+    "schema-stitching",
+    "federation",
+    "subgraph"
+  ],
   "type": "commonjs",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "publishConfig": {
     "access": "public"
   },
@@ -13,11 +25,12 @@
     "url": "git+https://github.com/bridges-wood/nestjs-stitcher.git",
     "directory": "packages/subgraph"
   },
+  "bugs": {
+    "url": "https://github.com/bridges-wood/nestjs-stitcher/issues"
+  },
   "exports": {
     ".": {
-      "@nestjs-stitcher/source": {
-        "default": "./src/index.ts"
-      },
+      "types": "./dist/index.d.ts",
       "default": "./dist/index.js"
     }
   },
@@ -25,8 +38,8 @@
     "@graphql-tools/schema": "^10.0.0",
     "@graphql-tools/stitching-directives": "^3.1.0",
     "@graphql-tools/utils": "^10.0.0",
-    "@nestjs-stitcher/auth": "0.0.1",
-    "@nestjs-stitcher/common": "0.0.1",
+    "@nestjs-stitcher/auth": "0.1.0",
+    "@nestjs-stitcher/common": "0.1.0",
     "zod": "^3.23.0"
   },
   "peerDependencies": {

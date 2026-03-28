@@ -1,9 +1,9 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import {
   computeHmacSignature,
-  serializeParams,
-  HMAC_SIGNATURE_EXTENSION,
   type GraphQLRequestParams,
+  HMAC_SIGNATURE_EXTENSION,
+  serializeParams,
 } from '../index.js';
 
 describe('HMAC Utilities', () => {
@@ -12,7 +12,7 @@ describe('HMAC Utilities', () => {
     variables: { testVar: 'testValue' },
     extensions: { [HMAC_SIGNATURE_EXTENSION]: 'testExtension' },
   };
-  const key = 'testKey';
+  const key = 'testKey-that-is-at-least-32-chars!';
 
   describe('serializeParams', () => {
     it('should serialize GraphQLParams correctly', () => {
@@ -26,12 +26,15 @@ describe('HMAC Utilities', () => {
   describe('computeHmacSignature', () => {
     it('should compute HMAC signature correctly', () => {
       const signature = computeHmacSignature(params, key);
-      expect(signature).toBe('BQzTVZfjGR/nbzqRFRqy/oOFKbYshmCQfoxXPiHkDG0=');
+      expect(signature).toBe('8NwSYO26E67bBoQl/9XSDJsbyOjr+dy7hDaHqmZFi+M=');
     });
 
     it('should return different signatures for different keys', () => {
       const signature1 = computeHmacSignature(params, key);
-      const signature2 = computeHmacSignature(params, 'differentKey');
+      const signature2 = computeHmacSignature(
+        params,
+        'differentKey-that-is-at-least-32!!',
+      );
       expect(signature1).not.toBe(signature2);
     });
 

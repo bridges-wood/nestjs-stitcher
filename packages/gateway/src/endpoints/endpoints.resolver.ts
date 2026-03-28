@@ -1,9 +1,9 @@
-import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { Logger } from '@nestjs/common';
-import { EndpointsService } from './endpoints.service.js';
-import { AddEndpointArgs } from './models/add-endpoint.args.js';
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
+import type { EndpointsService } from './endpoints.service.js';
+import type { AddEndpointArgs } from './models/add-endpoint.args.js';
 import { AddEndpointResult } from './models/add-endpoint.result.js';
-import { EndpointFilter } from './models/endpoint-filter.args.js';
+import type { EndpointFilter } from './models/endpoint-filter.args.js';
 import { LoadedEndpoint } from './models/loaded-endpoint.model.js';
 import { ReloadAllEndpointsResult } from './models/reload-all-endpoints.result.js';
 import { RemoveEndpointResult } from './models/remove-endpoint.result.js';

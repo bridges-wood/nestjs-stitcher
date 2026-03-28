@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
 import type { ExecutionRequest } from '@graphql-tools/utils';
+import { Injectable } from '@nestjs/common';
 import type { TrustedRequestExtensions } from '@nestjs-stitcher/common';
 import type { ExtensionVisitor } from './extension-visitor.js';
 

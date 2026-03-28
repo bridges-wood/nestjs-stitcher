@@ -1,12 +1,16 @@
-import { DynamicModule, Module } from '@nestjs/common';
+import { type DynamicModule, Module, type Provider } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { SUBGRAPH_MODULE_OPTIONS, type SubgraphModuleOptions } from './config/subgraph-config.interface.js';
+import {
+  SUBGRAPH_MODULE_OPTIONS,
+  type SubgraphModuleOptions,
+} from './config/subgraph-config.interface.js';
 import { HmacValidationInterceptor } from './interceptors/hmac-validation.interceptor.js';
 
 @Module({})
+// biome-ignore lint/complexity/noStaticOnlyClass: NestJS module pattern requires class with static forRoot
 export class SubgraphModule {
   static forRoot(options: SubgraphModuleOptions = {}): DynamicModule {
-    const providers: any[] = [
+    const providers: Provider[] = [
       { provide: SUBGRAPH_MODULE_OPTIONS, useValue: options },
     ];
 

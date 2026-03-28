@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { IS_PUBLIC_KEY, Public } from './public.decorator.js';
 
 describe('Public Decorator', () => {

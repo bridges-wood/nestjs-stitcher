@@ -1,6 +1,9 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { JwksClient } from 'jwks-rsa';
-import { type GetSigningKeyFunction, SigningKeyProvider } from './signing-key.provider.js';
+import {
+  type GetSigningKeyFunction,
+  SigningKeyProvider,
+} from './signing-key.provider.js';
 
 export interface JwksEndpointSource {
   getEndpoints(): Array<{ jwksUri?: string | null }>;

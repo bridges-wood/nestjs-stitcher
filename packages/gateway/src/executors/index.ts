@@ -1,1 +1,4 @@
-export { ExecutorFactory, type GraphQLRequestBody } from './executor-factory.js';
+export {
+  ExecutorFactory,
+  type GraphQLRequestBody,
+} from './executor-factory.js';

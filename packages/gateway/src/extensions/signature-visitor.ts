@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
 import type { ExecutionRequest } from '@graphql-tools/utils';
+import { Injectable } from '@nestjs/common';
 import {
   computeHmacSignature,
   HMAC_SIGNATURE_EXTENSION,
 } from '@nestjs-stitcher/common';
 import { print } from 'graphql';
-import type { ExtensionVisitor } from './extension-visitor.js';
 import type { GatewayModuleOptions } from '../config/gateway-config.interface.js';
+import type { ExtensionVisitor } from './extension-visitor.js';
 
 @Injectable()
 export class SignatureVisitor implements ExtensionVisitor {

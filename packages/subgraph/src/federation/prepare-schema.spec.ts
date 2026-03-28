@@ -1,6 +1,6 @@
-import { describe, it, expect } from 'vitest';
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { graphql, printSchema } from 'graphql';
+import { describe, expect, it } from 'vitest';
 import { prepareSchemaForFederation } from './prepare-schema.js';
 
 function createBaseSchema() {

@@ -13,17 +13,17 @@ export class ErrorFormatter {
       return { message: formattedError.message };
     }
 
-    const originalError = formattedError.extensions['originalError'] as Error;
+    const originalError = formattedError.extensions.originalError as Error;
     if (!originalError) {
       return {
         message: formattedError.message,
-        code: formattedError.extensions['code'],
+        code: formattedError.extensions.code,
       };
     }
 
     return {
       message: originalError.message,
-      code: formattedError.extensions['code'],
+      code: formattedError.extensions.code,
     };
   }
 

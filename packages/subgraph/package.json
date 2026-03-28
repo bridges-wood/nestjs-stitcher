@@ -16,14 +16,21 @@
     "@graphql-tools/schema": "^10.0.0",
     "@graphql-tools/stitching-directives": "^3.1.0",
     "@graphql-tools/utils": "^10.0.0",
-    "@nestjs-stitcher/auth": "workspace:*",
-    "@nestjs-stitcher/common": "workspace:*",
+    "@nestjs-stitcher/auth": "0.0.1",
+    "@nestjs-stitcher/common": "0.0.1",
+    "zod": "^3.23.0"
+  },
+  "peerDependencies": {
     "@nestjs/common": "^11.0.0",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.0",
     "@nestjs/graphql": "^13.0.0",
     "graphql": "^16.9.0",
-    "rxjs": "^7.8.0",
-    "zod": "^3.23.0"
+    "rxjs": "^7.8.0"
+  },
+  "peerDependenciesMeta": {
+    "@nestjs/config": {
+      "optional": true
+    }
   }
 }

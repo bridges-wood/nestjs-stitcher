@@ -48,7 +48,7 @@ importers:
   packages/auth:
     dependencies:
       '@nestjs-stitcher/common':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../common
       '@nestjs/common':
         specifier: ^11.0.0
@@ -112,10 +112,10 @@ importers:
         specifier: ^10.0.0
         version: 10.1.4(graphql@16.13.2)
       '@nestjs-stitcher/auth':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../auth
       '@nestjs-stitcher/common':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../common
       '@nestjs/common':
         specifier: ^11.0.0
@@ -167,10 +167,10 @@ importers:
         specifier: ^10.0.0
         version: 10.11.0(graphql@16.13.2)
       '@nestjs-stitcher/auth':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../auth
       '@nestjs-stitcher/common':
-        specifier: workspace:*
+        specifier: 0.0.1
         version: link:../common
       '@nestjs/common':
         specifier: ^11.0.0

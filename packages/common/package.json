@@ -13,9 +13,11 @@
     }
   },
   "dependencies": {
-    "@nestjs/common": "^11.0.0",
-    "graphql": "^16.9.0",
     "json-stable-stringify": "^1.1.1"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "^11.0.0",
+    "graphql": "^16.9.0"
   },
   "devDependencies": {
     "@types/json-stable-stringify": "^1.0.36"

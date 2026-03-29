@@ -2,7 +2,7 @@ import type { AsyncExecutor, ExecutionResult } from '@graphql-tools/utils';
 import { Injectable, Logger } from '@nestjs/common';
 import { OperationTypeNode, print } from 'graphql';
 import { createClient, type RequestParams } from 'graphql-sse';
-import type { ExtensionVisitor } from '../extensions/extension-visitor.js';
+import { type ExtensionVisitor } from '../extensions/extension-visitor.js';
 
 export interface GraphQLRequestBody {
   query: string;

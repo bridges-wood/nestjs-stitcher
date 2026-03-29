@@ -1,0 +1,57 @@
+directive @key(selectionSet: String!) on OBJECT
+directive @merge(
+  keyField: String
+  keyArg: String
+  additionalArgs: String
+  key: [String!]
+  argsExpr: String
+) on FIELD_DEFINITION
+directive @computed(selectionSet: String!) on FIELD_DEFINITION
+
+type Post @key(selectionSet: "{ id }") {
+  id: ID!
+  title: String!
+  body: String!
+  authorId: ID!
+  """
+  Resolved by the gateway via schema stitching — the full User
+  comes from the Users service.
+  """
+  author: User!
+}
+
+"""
+Partial User type contributed by the Posts service.
+The gateway merges this with the Users service's User type,
+adding the `posts` field.
+"""
+type User @key(selectionSet: "{ id }") {
+  id: ID!
+  posts: [Post!]!
+}
+
+type Query {
+  """
+  List all posts
+  """
+  posts: [Post!]!
+
+  """
+  Get a single post by ID
+  """
+  post(id: ID!): Post @merge(keyField: "id")
+
+  """
+  Merge entry point for the Posts service's User type.
+  The gateway calls this to resolve User.posts across services.
+  Prefixed with _ so it's filtered from the public stitched schema.
+  """
+  _postServiceUser(id: ID!): User @merge(keyField: "id")
+}
+
+type Mutation {
+  """
+  Create a new post
+  """
+  createPost(title: String!, body: String!, authorId: ID!): Post!
+}

@@ -15,9 +15,9 @@ import {
   skip,
   switchMap,
 } from 'rxjs';
-import type { EndpointLoader } from '../endpoints/endpoint-loader.js';
+import { EndpointLoader } from '../endpoints/endpoint-loader.js';
 import type { LoadedEndpoint } from '../endpoints/models/loaded-endpoint.model.js';
-import type { ExecutorFactory } from '../executors/executor-factory.js';
+import { ExecutorFactory } from '../executors/executor-factory.js';
 
 @Injectable()
 export class SchemaStitcher implements OnModuleDestroy {

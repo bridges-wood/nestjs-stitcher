@@ -1,4 +1,4 @@
-import type { AsyncExecutor, ExecutionResult } from '@graphql-tools/utils';
+import { type AsyncExecutor, type ExecutionResult } from '@graphql-tools/utils';
 import { Injectable, Logger, type OnModuleDestroy } from '@nestjs/common';
 import { NotFoundError } from '@nestjs-stitcher/common';
 import { backOff } from 'exponential-backoff';

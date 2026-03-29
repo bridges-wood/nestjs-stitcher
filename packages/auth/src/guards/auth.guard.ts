@@ -6,7 +6,7 @@ import {
   Logger,
   UnauthorizedException,
 } from '@nestjs/common';
-import type { Reflector } from '@nestjs/core';
+import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import type { StitcherUser } from '@nestjs-stitcher/common';
 import {
@@ -14,7 +14,7 @@ import {
   type AuthModuleOptions,
 } from '../config/auth-config.interface.js';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator.js';
-import type { JwtVerifier } from '../strategies/jwt-verifier.js';
+import { JwtVerifier } from '../strategies/jwt-verifier.js';
 import { extractBearerToken } from '../utils/extract-auth-token.js';
 
 @Injectable()

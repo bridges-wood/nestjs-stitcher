@@ -1,0 +1,36 @@
+{
+  "name": "@nestjs-stitcher/demo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Demo app for @nestjs-stitcher — 1 gateway + 2 subgraphs",
+  "scripts": {
+    "start:users": "ts-node src/users-service/main.ts",
+    "start:posts": "ts-node src/posts-service/main.ts",
+    "start:gateway": "ts-node src/gateway/main.ts",
+    "generate-token": "ts-node scripts/generate-token.ts"
+  },
+  "dependencies": {
+    "@nestjs-stitcher/auth": "workspace:*",
+    "@nestjs-stitcher/common": "workspace:*",
+    "@nestjs-stitcher/gateway": "workspace:*",
+    "@nestjs-stitcher/subgraph": "workspace:*",
+    "@nestjs/common": "^11.0.0",
+    "@nestjs/core": "^11.0.0",
+    "@nestjs/graphql": "^13.0.0",
+    "@nestjs/platform-express": "^11.0.0",
+    "@graphql-tools/schema": "^10.0.0",
+    "@graphql-yoga/nestjs": "^3.0.0",
+    "graphql": "^16.9.0",
+    "graphql-yoga": "^5.0.0",
+    "jose": "^6.0.0",
+    "reflect-metadata": "^0.2.0",
+    "rxjs": "^7.8.0"
+  },
+  "devDependencies": {
+    "@swc/core": "~1.15.5",
+    "@swc/helpers": "~0.5.18",
+    "@types/node": "^25.0.0",
+    "ts-node": "^10.9.0",
+    "typescript": "~5.9.2"
+  }
+}

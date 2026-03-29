@@ -4,7 +4,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import type { Reflector } from '@nestjs/core';
+import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import type { StitcherUser } from '@nestjs-stitcher/common';
 import { Roles } from '../decorators/roles.decorator.js';

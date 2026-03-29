@@ -1,0 +1,7 @@
+endpoints:
+  - name: users-service
+    hash: demo-users-v1
+    url: http://localhost:4001/graphql
+  - name: posts-service
+    hash: demo-posts-v1
+    url: http://localhost:4002/graphql

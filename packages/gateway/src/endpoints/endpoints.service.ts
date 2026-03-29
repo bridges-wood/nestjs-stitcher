@@ -1,5 +1,5 @@
 import { Injectable, Logger, type OnApplicationShutdown } from '@nestjs/common';
-import type { EndpointLoader } from './endpoint-loader.js';
+import { EndpointLoader } from './endpoint-loader.js';
 import type { AddEndpointArgs } from './models/add-endpoint.args.js';
 import type { AddEndpointResult } from './models/add-endpoint.result.js';
 import type { Endpoint } from './models/endpoint.model.js';

@@ -15,7 +15,7 @@
     "@nestjs-stitcher/gateway": "workspace:*",
     "@nestjs-stitcher/subgraph": "workspace:*",
     "@nestjs/common": "^11.0.0",
-    "@nestjs/core": "^11.0.0",
+    "@nestjs/core": "^11.1.18",
     "@nestjs/graphql": "^13.0.0",
     "@nestjs/platform-express": "^11.0.0",
     "@graphql-tools/schema": "^10.0.0",
